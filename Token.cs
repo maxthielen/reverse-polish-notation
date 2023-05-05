@@ -26,9 +26,6 @@ public class Token
             IsNumber = false;
             IsOperator = true;
         }
-        else
-        {
-            throw new ArgumentException();
-        }
+        else throw new ArgumentException();
     }
 }

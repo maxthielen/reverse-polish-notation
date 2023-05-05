@@ -18,23 +18,14 @@ public class Parser: IParser
     public IList<Token> Tokenize(string expression)
     {
         string[] expressions = expression.Split(' ');
-        var tokens = new List<Token>{};
+        var tokens = new List<Token>();
         foreach(string e in expressions)
         {
-            if (e.All(char.IsDigit))
-            {
-                tokens.Add(new Token(TokenType.Number, e));
-            }
-            else if (_supportedOperators.Contains(e))
-            {
-                tokens.Add(new Token(TokenType.Operator, e));
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
+            if (e.All(char.IsDigit)) tokens.Add(new Token(TokenType.Number, e));
+            else if (_supportedOperators.Contains(e)) tokens.Add(new Token(TokenType.Operator, e));
+            else throw new ArgumentException();
         }
-
+        
         return tokens;
     }
 }
