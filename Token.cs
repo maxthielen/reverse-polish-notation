@@ -9,25 +9,7 @@ public class Token
     public double NumericValue { get; }
     public bool IsOperator { get; }
     public bool IsNumber { get; }
-
-    public Token(string text)
-    {
-        Value = text;
-
-        if (text.All(char.IsDigit))
-        {
-            TokenType = TokenType.Number;
-            IsNumber = true;
-            IsOperator = false;
-            NumericValue = Double.Parse(text);
-        }
-        else
-        {
-            TokenType = TokenType.Operator;
-            IsNumber = false;
-            IsOperator = true;
-        }
-    }
+    
     public Token(TokenType tokenType, string text)
     {
         Value = text;
