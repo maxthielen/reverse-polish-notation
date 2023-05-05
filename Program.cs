@@ -4,6 +4,11 @@ public class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello World");
+        var calculator = new RpnCalculator(true);
+        var parser = new Parser(calculator.SupportedOperators);
+        var menu = new TextMenu(calculator.OperationsHelpText);
+        var controller = new Controller(calculator, parser, menu);
+        
+        controller.Run();
     }
 }

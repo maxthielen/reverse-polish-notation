@@ -15,11 +15,19 @@ public class Parser: IParser
         _supportedOperators = supportedOperators;
     }
 
-    public IList<Token> Tokenize(string expression)
+    public IList<string> Tokenize(string expression)
     {
         string[] expressions = expression.Split(' ');
+        var list = new List<string>();
+        foreach(string s in expressions) list.Add(s);
+        
+        return list;
+    }
+    
+    public IList<Token> Lex(IList<string> expression)
+    {
         var tokens = new List<Token>();
-        foreach(string e in expressions)
+        foreach(string e in expression)
         {
             if (e.All(char.IsDigit)) tokens.Add(new Token(TokenType.Number, e));
             else if (_supportedOperators.Contains(e)) tokens.Add(new Token(TokenType.Operator, e));
