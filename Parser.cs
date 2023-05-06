@@ -31,7 +31,7 @@ public class Parser: IParser
         {
             if (e.All(char.IsDigit)) tokens.Add(new Token(TokenType.Number, e));
             else if (_supportedOperators.Contains(e)) tokens.Add(new Token(TokenType.Operator, e));
-            else throw new ArgumentException();
+            else throw new InvalidOperationException($"Unknown operation: {e}");
         }
         
         return tokens;
