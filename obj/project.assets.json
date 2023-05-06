@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/max/Documents/saxion/y1/q4/c#/assignments/week-2/reverse-polish-notation/reverse-polish-notation.csproj",
+      "projectUniqueName": "/home/max/Documents/saxion/y1/q4/c#/assignments/week-3/reverse-polish-notation/reverse-polish-notation.csproj",
       "projectName": "reverse-polish-notation",
-      "projectPath": "/home/max/Documents/saxion/y1/q4/c#/assignments/week-2/reverse-polish-notation/reverse-polish-notation.csproj",
+      "projectPath": "/home/max/Documents/saxion/y1/q4/c#/assignments/week-3/reverse-polish-notation/reverse-polish-notation.csproj",
       "packagesPath": "/home/max/.nuget/packages/",
-      "outputPath": "/home/max/Documents/saxion/y1/q4/c#/assignments/week-2/reverse-polish-notation/obj/",
+      "outputPath": "/home/max/Documents/saxion/y1/q4/c#/assignments/week-3/reverse-polish-notation/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/max/.nuget/NuGet/NuGet.Config"
