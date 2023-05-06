@@ -8,25 +8,10 @@ public class RpnCalculator: ICalculator, ICollection<IOperation>
     private bool Verbose { get; }
     private IDictionary<string, IOperation> _operations;
 
-    public IList<string> SupportedOperators
-    {
-        get
-        {
-            var tmp = new List<string>();
-            foreach (IOperation o in _operations.Values) tmp.Add(o.Operator);
-            return tmp;
-        }
-    }
+    public IList<string> SupportedOperators => _operations.Values.Select(op => op.Operator).ToList();
 
-    public IList<string> OperationsHelpText
-    {
-        get
-        {
-            var tmp = new List<string>();
-            foreach (IOperation o in _operations.Values) tmp.Add($"{o.Operator}:\t {o.Name} -\t {o.Description}");
-            return tmp;
-        }
-    }
+    public IList<string> OperationsHelpText =>
+        _operations.Values.Select(op => $"{op.Operator}:\t {op.Name} -\t {op.Description}").ToList();
 
     public int Count { get; private set; }
     public bool IsReadOnly { get; }
