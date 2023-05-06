@@ -1,107 +1,139 @@
+using System.Collections;
 using System.Diagnostics;
 
 namespace reverse_polish_notation;
 
-public class RpnCalculator: ICalculator
+public class RpnCalculator: ICalculator, ICollection<IOperation>
 {
-    private bool _verbose { get; }
-    public IList<string> SupportedOperators { get; }
-    public IList<string> OperationsHelpText { get; }
+    private bool Verbose { get; }
+    private IDictionary<string, IOperation> _operations;
+
+    public IList<string> SupportedOperators
+    {
+        get
+        {
+            var tmp = new List<string>();
+            foreach (IOperation o in _operations.Values) tmp.Add(o.Operator);
+            return tmp;
+        }
+    }
+
+    public IList<string> OperationsHelpText
+    {
+        get
+        {
+            var tmp = new List<string>();
+            foreach (IOperation o in _operations.Values) tmp.Add($"{o.Operator}: {o.Name} - {o.Description}");
+            return tmp;
+        }
+    }
+
+    public int Count { get; private set; }
+    public bool IsReadOnly { get; }
 
     public RpnCalculator(bool verbose = false)
     {
-        _verbose = verbose;
-        
-        SupportedOperators = new List<string> { "+", "-", "*", "/", "^", "sqrt" };
-        OperationsHelpText = new List<string> { "+: plus - calculates the addition of two numbers", 
-                                                "-: minus - calculates the subtraction of two numbers", 
-                                                "*: multiply - calculates the multiplication of two numbers", 
-                                                "/: divide - calculates the division of two numbers", 
-                                                "^: exponent - calculates the exponential of two numbers", 
-                                                "sqrt: square root - calculates the root of a number" };
+        Verbose = verbose;
+        _operations = new Dictionary<string, IOperation>();
+
+        Count = 0;
+        IsReadOnly = false;
     }
     
     public double Calculate(IList<Token> expression)
     {
         var n = new Stack<double>();
-        int count = 1;
+        var stepCount = 1;
         foreach (Token t in expression)
         {
-            if(_verbose) Console.WriteLine($"Step {count}:");
-            if (t.IsNumber)
+            if(Verbose) Console.WriteLine($"Step {stepCount}:");
+            switch (t.TokenType)
             {
-                if(_verbose) Console.WriteLine($"\t pushed {t.Value}");
-                n.Push(t.NumericValue);
+                case TokenType.Number:
+                    if(Verbose) Console.WriteLine($"\t pushed {t.Value}");
+                    n.Push(t.NumericValue);
+                    break;
+                case TokenType.Operator:
+                    if(!_operations.ContainsKey(t.Value)) 
+                        throw new InvalidOperationException($"Unknown operation: {t.Value}");
+                    
+                    switch (_operations[t.Value])
+                    {
+                        case IBinaryOperation binOp:
+                        {
+                            double x = n.Pop();
+                            double y = n.Pop();
+                            if (Verbose) Console.WriteLine($"\t popped {x} and {y}");
+                            double s = binOp.Calculate(y, x);
+                            n.Push(s);
+                            if (Verbose) Console.WriteLine($"\t pushed {y} {binOp.Operator} {x} = {s}");
+                            break;
+                        }
+                        case IUnaryOperation unOp:
+                        {
+                            double x = n.Pop();
+                            if (Verbose) Console.WriteLine($"\t popped {x}");
+                            double s = unOp.Calculate(x);
+                            n.Push(s);
+                            if (Verbose) Console.WriteLine($"\t pushed {unOp.Operator} of {x} = {s}");
+                            break;
+                        }
+                        case INullaryOperation nullOp:
+                            n.Push(nullOp.Value);
+                            break;
+                    }
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unknown token type: {t.TokenType}");
+                    
             }
-            else if (t.IsOperator)
-            {
-                if (t.Value == "+")
-                {
-                    double x = n.Pop();
-                    double y = n.Pop();
-                    if(_verbose) Console.WriteLine($"\t popped {x} and {y}");
-                    double s = y + x;
-                    n.Push( s );
-                    if(_verbose) Console.WriteLine($"\t pushed {y} + {x} = {s}");
-                }
-                else if (t.Value == "-")
-                {
-                    double x = n.Pop();
-                    double y = n.Pop();
-                    if(_verbose) Console.WriteLine($"\t popped {x} and {y}");
-                    double s = y - x;
-                    n.Push( s );
-                    if(_verbose) Console.WriteLine($"\t pushed {y} - {x} = {s}");
-                }
-                else if (t.Value == "*")
-                {
-                    double x = n.Pop();
-                    double y = n.Pop();
-                    if(_verbose) Console.WriteLine($"\t popped {x} and {y}");
-                    double s = y * x;
-                    n.Push( s );
-                    if(_verbose) Console.WriteLine($"\t pushed {y} * {x} = {s}");
-                }
-                else if (t.Value == "/")
-                {
-                    double x = n.Pop();
-                    double y = n.Pop();
-                    if(_verbose) Console.WriteLine($"\t popped {x} and {y}");
-                    double s = y / x;
-                    n.Push( s );
-                    if(_verbose) Console.WriteLine($"\t pushed {y} / {x} = {s}");
-                }
-                else if (t.Value == "^")
-                {
-                    double x = n.Pop();
-                    double y = n.Pop();
-                    if(_verbose) Console.WriteLine($"\t popped {x} and {y}");
-                    double s = Math.Pow(y, x);
-                    n.Push( s );
-                    if(_verbose) Console.WriteLine($"\t pushed {y} ^ {x} = {s}");
-                }
-                else if (t.Value == "sqrt")
-                {
-                    double x = n.Pop();
-                    if (_verbose) Console.WriteLine($"\t popped {x}");
-                    double s = Math.Sqrt(x);
-                    n.Push(s);
-                    if (_verbose) Console.WriteLine($"\t pushed sqrt({x}) = {s}");
-                }
-                else throw new ArgumentException();
-            }
-            else throw new ArgumentException();
 
-            if (_verbose)
-            {
-                Console.Write("Current stack:");
-                foreach (double d in n) Console.Write($" {d},");
-                Console.WriteLine();
-                count++;
-            }
+            if (!Verbose) continue;
+            Console.Write("Current stack:");
+            foreach (double d in n) Console.Write($" {d},");
+            Console.WriteLine();
+            stepCount++;
         }
 
         if (n.Count == 1) return n.Pop();
         throw new UnreachableException();
+    }
+
+    public IEnumerator<IOperation> GetEnumerator()
+    {
+        return _operations.Values.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public void Add(IOperation item)
+    {
+        Count++;
+        _operations.Add(item.Operator, item);
+    }
+
+    public void Clear()
+    {
+        Count = 0;
+        _operations.Clear();
+    }
+
+    public bool Contains(IOperation item)
+    {
+        return _operations.ContainsKey(item.Operator);
+    }
+
+    public void CopyTo(IOperation[] array, int arrayIndex)
+    {
+        _operations.Values.CopyTo(array, arrayIndex);
+    }
+
+    public bool Remove(IOperation item)
+    {
+        Count--;
+        return _operations.Remove(item.Operator);
     }
 }
