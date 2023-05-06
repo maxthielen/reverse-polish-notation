@@ -1,6 +1,6 @@
 namespace reverse_polish_notation;
 
-public interface INullaryOperation
+public interface INullaryOperation: IOperation
 {
     public double Value { get; }
 }
