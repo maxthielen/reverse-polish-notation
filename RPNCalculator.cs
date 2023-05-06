@@ -23,7 +23,7 @@ public class RpnCalculator: ICalculator, ICollection<IOperation>
         get
         {
             var tmp = new List<string>();
-            foreach (IOperation o in _operations.Values) tmp.Add($"{o.Operator}: {o.Name} - {o.Description}");
+            foreach (IOperation o in _operations.Values) tmp.Add($"{o.Operator}:\t {o.Name} -\t {o.Description}");
             return tmp;
         }
     }

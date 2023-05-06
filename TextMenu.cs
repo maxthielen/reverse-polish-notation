@@ -32,7 +32,6 @@ public class TextMenu : IMenu
         Console.WriteLine("Enter expressions using RPN notation, for instance to calculate:" +
                           "\n\t2 + 3 * 4" +
                           "\n\tenter '2 3 4 * +'" +
-                          "\n\tor enter '3 + 4 * 2 +'" +
                           "\nenter (o)ps to see available operations");
     }
 }
