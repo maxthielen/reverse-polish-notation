@@ -15,6 +15,7 @@ public class TextMenu : IMenu
                           "\nEnter an RPN expression to evaluate." +
                           "\nEnter '(h)elp' for help." +
                           "\nEnter '(o)ps' for available operations." +
+                          "\nEnter '(s)witch' to switch calculators." +
                           "\nEnter '(q)uit' to exit.");
     }
 

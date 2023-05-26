@@ -19,7 +19,11 @@ public class Program
 
         var parser = new Parser(calculator.SupportedOperators);
         var menu = new TextMenu(calculator.OperationsHelpText);
-        var controller = new Controller(calculator, parser, menu);
+
+        var rpn = new RpnEvaluator(calculator, parser);
+        var mathjs = new MathJsEvaluator();
+        
+        var controller = new Controller(new IExpressionEvaluator[]{rpn, mathjs}, menu);
         
         controller.Run();
     }

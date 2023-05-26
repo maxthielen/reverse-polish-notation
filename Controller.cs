@@ -2,21 +2,42 @@ namespace reverse_polish_notation;
 
 public class Controller
 {
-    private ICalculator _calc;
-    private IParser _parser;
     private IMenu _menu;
 
-    public Controller(ICalculator calc, IParser parser, IMenu menu)
+    public List<IExpressionEvaluator> Evaluators { get; } = new();
+
+    private IExpressionEvaluator _currentEvaluator;
+
+    public IExpressionEvaluator CurrentEvaluator
     {
-        _calc = calc;
-        _parser = parser;
+        get => _currentEvaluator;
+        set
+        {
+            if (_menu is not null) _menu.Help = value?.Help;
+            _currentEvaluator = value;
+        }
+    }
+
+    public Controller(IExpressionEvaluator[] evaluators, IMenu menu)
+    {
+        Evaluators.AddRange(evaluators);
         _menu = menu;
+
+        CurrentEvaluator = Evaluators.First();
+    }
+    
+    private void _switchEvaluator()
+    {
+        do
+        {
+            var input = Console.ReadLine();
+        } while ( /*need some condition */);
     }
 
     public void Run()
     {
         _menu.ShowMenu();
-        var input = string.Empty;
+        string input;
         do
         {
             Console.Write("> ");
@@ -31,20 +52,18 @@ public class Controller
                 case "o":
                     _menu.ShowOperations();
                     break;
+                case "s":
+                    _switchEvaluator();
+                    break;
                 default:
-                    // an RPN expression is expected here
+                    // an expression is expected here
                     try
                     {
-                        var split = _parser.Tokenize(input);
-                        if (split.Count != 0)
-                        {
-                            var tokens = _parser.Lex(split);
-                            var result = _calc.Calculate(tokens);
-                            Console.WriteLine($"\n {result}\n");
-                        }
+                        var eval = CurrentEvaluator.Evaluate(input);
+                        var output = eval.Success ? $"\n {eval.Result}\n" : eval.ErrorMessage;
+                        Console.WriteLine(output);
                     }
-                    // if the input is not valid, an exception is thrown by calculator or parser
-                    catch (FormatException e)
+                    catch (Exception e)
                     {
                         Console.WriteLine(e.Message);
                     }
