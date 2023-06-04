@@ -22,7 +22,10 @@ public class RpnEvaluator : IExpressionEvaluator
         return new EvaluationResult(result: result);
     }
 
-    public IList<string> Help => new List<string>{ "nothing yet" };
+    public string Help => "Enter expressions using RPN notation, for instance to calculate:" + 
+                          "\n\t2 + 3 * 4" +
+                          "\n\tenter '2 3 4 * +'" +
+                          "\nenter (o)ps to see available operations";
     
     public string Description => "RPN Calculator";
 }

@@ -16,7 +16,10 @@ public class MathJsEvaluator : IExpressionEvaluator
         throw new Exception(response);
     }
 
-    public IList<string> Help => new List<string> { "nothing yet" };
+    public string Help => "Enter expressions using normal notation, for instance to calculate:" + 
+                          "\n\t2 + 3 * 4" +
+                          "\n\tenter '2 + 3 * 4'" +
+                          "\nenter (o)ps to see available operations";
     
     public string Description => "MathJSEvaluator";
 }

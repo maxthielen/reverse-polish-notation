@@ -13,7 +13,7 @@ public class Controller
         get => _currentEvaluator;
         set
         {
-            if (_menu is not null) _menu.Help = value?.Help;
+            if (_menu is not null) _menu.Help = value?.Help ?? throw new Exception("unable to set _currentEvaluator to null");
             _currentEvaluator = value;
         }
     }
@@ -28,10 +28,18 @@ public class Controller
     
     private void _switchEvaluator()
     {
+        Console.WriteLine($"Current Evaluator: {_currentEvaluator.Description}" +
+                          $"\n\tAvailable Evaluators: {String.Join("\n\t\t", Evaluators.Select(e => e.Description))}" +
+                          $"\n\tenter 1 - {Evaluators.Count} to select your next evaluator.");
+        string input;
+        int index;
         do
         {
-            var input = Console.ReadLine();
-        } while ( /*need some condition */);
+            Console.Write("> ");
+            input = Console.ReadLine() ?? "";
+        } while (!int.TryParse(input, out index) && (index > Evaluators.Count || index < 1));
+    
+        CurrentEvaluator = Evaluators[index - 1];
     }
 
     public void Run()

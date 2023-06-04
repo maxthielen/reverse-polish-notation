@@ -3,6 +3,8 @@ namespace reverse_polish_notation;
 public class TextMenu : IMenu
 {
     public IList<string> OperationsHelp { get; set; }
+    
+    public string Help { get; set; }
 
     public TextMenu(IList<string> operationsHelp)
     {
@@ -28,11 +30,5 @@ public class TextMenu : IMenu
         }
     }
 
-    public void ShowHelp()
-    {
-        Console.WriteLine("Enter expressions using RPN notation, for instance to calculate:" +
-                          "\n\t2 + 3 * 4" +
-                          "\n\tenter '2 3 4 * +'" +
-                          "\nenter (o)ps to see available operations");
-    }
+    public void ShowHelp(){ Console.WriteLine(Help); }
 }
